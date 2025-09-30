@@ -1,0 +1,1 @@
+set location to POSIX path of (choose file with prompt "File Location:" default location (path to desktop))

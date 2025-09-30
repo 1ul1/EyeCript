@@ -1,0 +1,1 @@
+set a to text returned of (display dialog "Choose a password:" default answer "")
