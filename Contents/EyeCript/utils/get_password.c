@@ -1,20 +1,24 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include "global_pipe.h"
 #include<unistd.h>
 
-char* get_password() {
-    // Uses applescript to prompts the user to select 
-    // a file and returns the full absolute path
+void get_password() {
+    // Uses applescript to prompts the user to write 
+    // a password and writes it into the pipe
     system("afplay /System/Library/Sounds/Glass.aiff &");
 
-    char passCommand[81] = "osascript ./EyeCript/utils/apple_scripts/choosePassword.applescript 2> /dev/null";
-    FILE* pass = NULL;
-    pass = popen(passCommand, "r");
-    if (pass == NULL) {return -1;}
+    pid_t pid = fork();
 
-    char* password = malloc(sizeof(char) * 30);
-    if (fgets(password, sizeof(char) * 30, pass) == NULL) {return -2;}
+    if (pid == 0) {
+        dup2(fd[1], 1);
+        execlp(
+            "osascript",
+            "osascript",
+            "./EyeCript/utils/apple_scripts/choosePassword.applescript",
+            NULL
+        );
+    } else if (pid < 0) {
+        exit(1);
+    }
 
-    return password;
+    return;
 }
