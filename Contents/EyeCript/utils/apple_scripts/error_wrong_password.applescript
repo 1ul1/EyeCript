@@ -1,0 +1,1 @@
+display dialog "Wrong Password!" with icon stop

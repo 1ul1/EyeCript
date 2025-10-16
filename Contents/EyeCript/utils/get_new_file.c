@@ -1,10 +1,11 @@
 #include "global_pipe.h"
+#include "utils.h"
 #include<unistd.h>
 
 void get_new_file() {
     // Uses applescript to prompts the user to select 
     // a file and writes it into the pipe
-    system("afplay /System/Library/Sounds/Glass.aiff &");
+    good_sound;
 
     pid_t pid = fork();
 

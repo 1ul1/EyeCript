@@ -13,7 +13,6 @@ void encryption() {
     get_new_file();
 
     char filename[124];
-    char password[32];
     char new_filename[124];
 
     ssize_t len = 0;
@@ -55,15 +54,25 @@ void encryption() {
             "-pass:", "fd:0",
             NULL
         );
-    } else
+    } else{
+        bad_sound;
+        visual_error;
         exit(1);
+    } 
 
     char er[1];
     if (read(fd_error[0], er, 1) == 0) {
-        system("osascript -e 'display dialog \"Da\"'");
+        bad_sound;
+        visual_error;
         exit(4);
     }
 
+    // Add Extension in encrypted file footer
+    char* extension = get_extension(filename);
+    set_extension(new_filename, extension);
+    free(extension);
+
+    // Cleanup
     close(fd_error[0]);
     close(fd[0]);
     close(fd[1]);

@@ -1,0 +1,1 @@
+display dialog "Error!" with icon stop
