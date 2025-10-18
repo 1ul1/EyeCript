@@ -10,7 +10,7 @@ char* get_extension(const char* filename) {
         bad_sound;
         visual_error;
 
-        exit(5);
+        exit(6);
         return NULL;
     }
 
@@ -30,7 +30,7 @@ char* get_extension(const char* filename) {
         bad_sound;
         visual_error;
 
-        exit(5);
+        exit(6);
         return NULL;
     }
 

@@ -17,7 +17,7 @@ char* find_extension(const char* filename) {
         visual_error;
 
         exit(5);
-        return;
+        return NULL;
     }
 
     char* extension = malloc(sizeof(char) * (len + 1));

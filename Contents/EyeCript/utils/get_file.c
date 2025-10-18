@@ -19,6 +19,7 @@ void get_file() {
             "./EyeCript/utils/apple_scripts/selectFile.applescript",
             NULL
         );
+        exit(1);
     } else if (pid < 0) {
         exit(1);
     }

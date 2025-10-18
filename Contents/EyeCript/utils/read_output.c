@@ -6,8 +6,8 @@ void read_output(char* line) {
     do {
         read(fd[0], line + i, sizeof(char));
         i = i + 1;
-    } while (line[i] != '\n');
-    line[i] = '\0';
+    } while (line[i - 1] != '\n');
+    line[i - 1] = '\0';
 
     return;
 }

@@ -10,10 +10,10 @@ else
 	set action2 to item 1 of action2
 
 	if action2 is "Encrypt" then 
-		do shell script "./EyeCript/build/enc.out"
+		do shell script "./EyeCript/build/EC.out enc"
 	else if action2 is "Decrypt" then 
-		do shell script "./EyeCript/build/dec.out"
+		do shell script "./EyeCript/build/EC.out dec"
 	else if action2 is "View Encrypted" then 
-		do shell script "./EyeCript/build/view.out"
+		do shell script "./EyeCript/build/EC.out view"
 	end if
 end if

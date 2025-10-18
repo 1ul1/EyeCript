@@ -26,7 +26,9 @@ char* get_extension(const char* filename);
 char* find_extension(const char* filename);
 void set_extension(const char* filename, const char* extension);
 
+void encryption();
 void decryption();
+void preview();
 
 extern int toggle;
 void switch_toggle();

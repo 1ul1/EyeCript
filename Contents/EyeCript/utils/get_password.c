@@ -22,6 +22,7 @@ void get_password() {
     } else if (pid < 0) {
         exit(1);
     }
-
+    wait(NULL);
+    close(fd[1]);
     return;
 }

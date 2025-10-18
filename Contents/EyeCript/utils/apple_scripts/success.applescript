@@ -1,1 +1,1 @@
-display dialog 'Success!'
+display dialog "Success!"
