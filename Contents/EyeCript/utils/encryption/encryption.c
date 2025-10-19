@@ -55,7 +55,7 @@ void encryption() {
         execlp(
             "openssl",
             "openssl",
-            "enc", "-aes-256-gcm", "-pbkdf2", "-iter", "600000", "-salt",
+            "enc", "-aes-256-cbc", "-pbkdf2", "-iter", "600000", "-salt",
             "-in", filename,
             "-out", new_filename,
             "-pass", "fd:0",
@@ -71,7 +71,7 @@ void encryption() {
     close(fd[0]);
 
     char er[1];
-    if (read(fd_error[0], er, 1) == 0) {
+    if (read(fd_error[0], er, 1) > 0) {
         bad_sound;
         visual_error;
         exit(4);
@@ -79,7 +79,7 @@ void encryption() {
 
     // Add Extension in encrypted file footer
     char* extension = find_extension(filename);
-    set_extension(new_filename, extension);
+    //set_extension(new_filename, extension);
     free(extension);
 
     // Cleanup

@@ -16,13 +16,13 @@ char* get_extension(const char* filename) {
 
     fseek(file, -1, SEEK_END);
     int len = (int)fgetc(file);
-    fseek(file, -len - 1, SEEK_CUR);
+    fseek(file, -len -1, SEEK_CUR);
     char* extension = malloc (sizeof(char) * (len + 1));
     fread(extension, sizeof(char), len, file);
 
     *(extension + len) = '\0';
 
-    int truncate_size = ftell(file);
+    int truncate_size = ftell(file) - len;
 
     fclose(file);
     // remove footer

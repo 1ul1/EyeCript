@@ -19,14 +19,14 @@ void decryption() {
     wait(NULL);
     read_output(filename);
 
-    char* extension = get_extension(filename);
+    // char* extension = get_extension(filename);
 
     // Generate Decrypted name
-    char* new_filename = malloc(sizeof(char) * (strlen(filename) + strlen(extension) + 1 + 1));
+    char* new_filename = malloc(sizeof(char) * (strlen(filename) + 1 + 1));
     strcpy(new_filename, filename);
     *(new_filename + strlen(filename)) = '.';
-    *(new_filename + strlen(filename) + 1) = '\0';
-    strcat(new_filename, extension);
+    // *(new_filename + strlen(filename) + 1) = '\0';
+    // strcat(new_filename, extension);
 
     FILE* new_file = fopen(new_filename, "rb+");
     if (new_file != NULL) {
@@ -62,11 +62,10 @@ void decryption() {
         close(fd_error[0]);
         dup2(fd[0], 0);
         close(fd[0]);
-        wait(NULL);
         execlp(
             "openssl",
             "openssl",
-            "enc", "-d", "-aes-256-gcm", "-pbkdf2", "-iter", "600000", "-salt",
+            "enc", "-d", "-aes-256-cbc", "-pbkdf2", "-iter", "600000", "-salt",
             "-in", filename,
             "-out", new_filename,
             "-pass", "fd:0",
@@ -81,7 +80,7 @@ void decryption() {
     close(fd_error[1]);
 
     char er[1];
-    if (read(fd_error[0], er, 1) == 0) {
+    if (read(fd_error[0], er, 1) > 0) {
         bad_sound;
         visual_wrong_pass;
         goto decryption;
@@ -109,7 +108,7 @@ void decryption() {
     wait(NULL);
 
     // Cleanup
-    free(extension);
+    //free(extension);
     free(new_filename);
 
     if (toggle == 0) {

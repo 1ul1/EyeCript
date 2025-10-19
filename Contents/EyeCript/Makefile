@@ -4,14 +4,14 @@ CFLAGS := -O2 -Wall -Wextra -I./include
 SRCS := $(shell find ./ -name "*.c")
 OUT := build/EC.out
 
-.PHONY: all clean
+.PHONY: all clean again
 
-all: $(OUT)
+all: clean build
 
 build: $(OUT)
 
 $(OUT):
-	$(CC) $(CFLAGS) $(SRCS) -o $(OUT)
+	$(CC) $(CFLAGS) $(SRCS) -o $(OUT) 
 
 clean:
 	rm -f $(OUT)

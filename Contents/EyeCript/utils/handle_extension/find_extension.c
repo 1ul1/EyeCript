@@ -23,5 +23,6 @@ char* find_extension(const char* filename) {
     char* extension = malloc(sizeof(char) * (len + 1));
     memcpy(extension, pos + 1, len);
     *(extension + len) = '\0';
+
     return extension;
 }
