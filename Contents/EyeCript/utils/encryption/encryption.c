@@ -48,10 +48,13 @@ void encryption() {
         // enc command 
         // openssl enc -aes-256-gcm -pbkdf2 -iter 600000 -salt -in <<get_file>> -out <<get_new_file>>
         dup2(fd_error[1], 2);
-        close(fd_error[1]);
-        close(fd_error[0]);
+        if (fd_error[1] > 2)
+            close(fd_error[1]);
+        if (fd_error[0] > 2)
+            close(fd_error[0]);
         dup2(fd[0], 0);
-        close(fd[0]);
+        if (fd[0] > 2)
+            close(fd[0]);
         execlp(
             "openssl",
             "openssl",
@@ -70,8 +73,8 @@ void encryption() {
     close(fd_error[1]);
     close(fd[0]);
 
-    char er[1];
-    if (read(fd_error[0], er, 1) > 0) {
+    char er[12];
+    if (read(fd_error[0], er, 11) > 0) {
         bad_sound;
         visual_error;
         exit(4);

@@ -9,7 +9,9 @@ void get_password() {
 
     int fd_pass[2] = {0};
     if (pipe(fd_pass) == -1) {
-        printf("ERROR\n");
+        bad_sound;
+        visual_error;
+        exit(8);
     }
 
     pid_t pid = fork();
@@ -23,8 +25,13 @@ void get_password() {
             "./EyeCript/utils/apple_scripts/choosePassword.applescript",
             NULL
         );
+        bad_sound;
+        visual_error;
+        exit(8);
     } else if (pid < 0) {
-        exit(1);
+        bad_sound;
+        visual_error;
+        exit(8);
     }
     close(fd_pass[1]);
 
@@ -37,27 +44,29 @@ void get_password() {
         dup2(fd_pass[0], 0);
         close(fd_pass[0]);
         dup2(fd[1], 1);
-        close(fd[0]);
+        if (fd[0] > 2) // To not close stdin
+            close(fd[0]);
         close(fd[1]);
         execlp(
-            "cat",
-            "cat",
+            "tr",
+            "tr",
+            "-d",
+            "\n",
             NULL
         );
+        bad_sound;
+        visual_error;
+        exit(8);
     } else if (pid < 0) {
-        exit(1);
+        bad_sound;
+        visual_error;
+        exit(8);
     }
-    close(fd_pass[0]);
     close(fd[1]);
 
     wait(NULL);
 
-    char password[100];
-    read(fd[0], password, 99);
-    for (int i = 0; i < strlen(password); i++) {
-        printf("%c", password[i]);
-    }
-    printf("a");
-    printf("a\nDONE\n");
+    close(fd_pass[0]);
+
     return;
 }
