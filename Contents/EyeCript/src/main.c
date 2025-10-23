@@ -28,19 +28,15 @@ int main(int argc, char* argv[]) {
             case 2:
                 preview();
                 break;
-            default:
-                bad_sound;
-                visual_error;
-                exit(2);
             }
         }
     }
 
-    success_sound;
-    visual_success;
-
-    exit(0);
-
+    bad_sound;
+    visual_error;
+    
+    perror("Invalid argument");
+    exit(2);
 
     return 0;
 }

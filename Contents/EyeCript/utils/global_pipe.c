@@ -12,6 +12,7 @@ void init_pipe() {
     if (pipe(fd) != 0) {
         bad_sound;
         visual_error;
+        perror("Pipe init failed");
         exit(2);
     }
 }

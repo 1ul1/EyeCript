@@ -19,6 +19,7 @@ void get_new_file() {
             "./EyeCript/utils/apple_scripts/chooseWhereToSave.applescript",
             NULL
         );
+        exit(1);
     } else if (pid < 0) {
         exit(1);
     }

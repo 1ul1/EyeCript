@@ -10,6 +10,7 @@ void set_extension(const char* filename, const char* extension) {
         bad_sound;
         visual_error;
 
+        perror("File does not exist");
         exit(7);
         return;
     }

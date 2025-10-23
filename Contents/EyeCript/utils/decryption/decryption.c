@@ -2,6 +2,8 @@
 #include "utils.h"
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
+#include <unistd.h>
 
 extern int toggle;
 
@@ -19,23 +21,21 @@ void decryption() {
     wait(NULL);
     read_output(filename);
 
-    // char* extension = get_extension(filename);
-
     // Generate Decrypted name
     char* new_filename = malloc(sizeof(char) * (strlen(filename) + 1 + 1));
     strcpy(new_filename, filename);
     *(new_filename + strlen(filename)) = '.';
-    // *(new_filename + strlen(filename) + 1) = '\0';
-    // strcat(new_filename, extension);
+    *(new_filename + strlen(filename) + 1) = '\0';
 
+    // Clean and check if it already exists/
     FILE* new_file = fopen(new_filename, "rb+");
     if (new_file != NULL) {
-        if (truncate(new_filename, 0) == -1) {
-            bad_sound;
-            visual_error;
-            exit(2);
-        }
         fclose(new_file);
+        bad_sound;
+        visual_error;
+
+        perror("File already exists");
+        exit(2);
     }
 
     // Decryption -----------------------
@@ -48,6 +48,8 @@ void decryption() {
     if (pipe(fd_error) != 0){
         bad_sound;
         visual_error;
+
+        perror("Pipe fd_error Failed");
         exit(2);
     }
     
@@ -77,6 +79,7 @@ void decryption() {
         );
         bad_sound;
         visual_error;
+        perror("Openssl failed");
         exit(4);
     }
     wait(NULL);
@@ -94,6 +97,37 @@ void decryption() {
 
     close(fd_error[0]);
 
+    // remove extension from footer, add it to file
+    char* extension = get_extension(new_filename);
+
+    char* new_filename_extension = malloc(
+        sizeof(char) * (strlen(new_filename) + strlen(extension) + 1)
+    );
+    *new_filename_extension = '\0';
+    strcat(new_filename_extension, new_filename);
+    strcat(new_filename_extension, extension);
+
+    // Check if it already exists to not replace other files
+    new_file = fopen(new_filename_extension, "rb+");
+    if (new_file != NULL) {
+        fclose(new_file);
+        remove(new_filename);
+
+        bad_sound;
+        visual_error;
+        perror("File already exists");
+        exit(2);
+    }
+
+    if (rename(new_filename, new_filename_extension) != 0) {
+        bad_sound;
+        visual_error;
+
+        perror("rename failed");
+        exit(4);
+    }
+    free(extension);
+
     // Cleanup
     success_sound;
     pid = fork();
@@ -104,11 +138,14 @@ void decryption() {
         execlp(
             "open",
             "open",
-            new_filename,
+            "-W",
+            new_filename_extension,
             NULL
         );
         bad_sound;
         visual_error;
+        perror("open failed");
+        exit(4);
     }
     wait(NULL);
 
@@ -116,13 +153,12 @@ void decryption() {
     if (toggle == 0) {
         exit(0);
     } else if (toggle == 1) {
-        char* rm_command = malloc(sizeof(char)* (strlen(new_filename) + 4));
-        *rm_command = '\0';
-        system(strcat(strcat(rm_command, "rm "), new_filename));
-        free(rm_command);
+        sleep(3);
+        remove(new_filename_extension);
     }
 
     free(new_filename);
+    free(new_filename_extension);
 
     exit(0);
 

@@ -27,6 +27,7 @@ void encryption() {
         if (truncate(new_filename, 0) == -1) {
             bad_sound;
             visual_error;
+            perror("Truncate failed");
             exit(2);
         }
         fclose(new_file);
@@ -37,8 +38,14 @@ void encryption() {
     if (pipe(fd_error) != 0){
         bad_sound;
         visual_error;
+        perror("Pipe init failed");
         exit(2);
     }
+
+    // Add Extension in original file's footer
+    char* extension = find_extension(filename);
+    set_extension(filename, extension);
+    free(extension);
 
     init_pipe();
     get_password();
@@ -66,6 +73,7 @@ void encryption() {
         );
         bad_sound;
         visual_error;
+        perror("Openssl failed I");
         exit(4);
     }
     wait(NULL);
@@ -77,13 +85,12 @@ void encryption() {
     if (read(fd_error[0], er, 11) > 0) {
         bad_sound;
         visual_error;
+        perror("openssl encryption failed II");
         exit(4);
     }
 
-    // Add Extension in encrypted file footer
-    char* extension = find_extension(filename);
-    //set_extension(new_filename, extension);
-    free(extension);
+    // Delete Extension from original file's footer
+    get_extension(filename);
 
     // Cleanup
     close(fd_error[0]);

@@ -6,10 +6,11 @@
 char* find_extension(const char* filename) {
     // Get extension of file
     const char* pos = strrchr(filename, '.');
-    if (pos == NULL)
-        return NULL;
-    else if (*(pos + 1) == '\0')
-        return NULL;
+    if (pos == NULL || *(pos + 1) == '\0'){
+        char* extension = malloc(sizeof(char));
+        *extension = '\0';
+        return extension;
+    }
 
     int len = strlen(pos + 1);
     if (len >= 16) {
