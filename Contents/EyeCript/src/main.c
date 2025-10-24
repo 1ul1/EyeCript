@@ -5,6 +5,9 @@
 
 int main(int argc, char* argv[]) {
     // Starting point of project
+    int reserve_fd_1[2], reserve_fd_2[2];
+    pipe(reserve_fd_1);
+    pipe(reserve_fd_2);
     
     init_pipe();
     if (argc != 2) {

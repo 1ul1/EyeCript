@@ -1,1 +1,1 @@
-display dialog "Wrong Password!" with icon stop
+display dialog "Wrong Password!" buttons {"Try Again."} default button "Try Again." with icon stop

@@ -48,7 +48,12 @@ void encryption() {
     free(extension);
 
     init_pipe();
-    get_password();
+    
+    // Exit if user closes applescript
+    if (get_password() == 8) {
+        get_extension(filename);
+        exit(8);
+    }
 
     pid_t pid = fork();
     if (pid == 0) {
@@ -81,16 +86,18 @@ void encryption() {
     close(fd_error[1]);
     close(fd[0]);
 
+    // Delete Extension from original file's footer
+    get_extension(filename);
+
     char er[12];
     if (read(fd_error[0], er, 11) > 0) {
+        remove(new_filename);
+
         bad_sound;
         visual_error;
         perror("openssl encryption failed II");
         exit(4);
     }
-
-    // Delete Extension from original file's footer
-    get_extension(filename);
 
     // Cleanup
     close(fd_error[0]);

@@ -18,7 +18,7 @@ void get_new_file();
 
 void get_file();
 
-void get_password();
+int get_password();
 
 void read_output(char* line);
 

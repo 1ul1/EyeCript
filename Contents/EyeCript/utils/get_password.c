@@ -2,7 +2,7 @@
 #include "utils.h"
 #include<unistd.h>
 
-void get_password() {
+int get_password() {
     // Uses applescript to prompts the user to write 
     // a password and writes it into the pipe
     good_sound;
@@ -14,11 +14,21 @@ void get_password() {
         exit(8);
     }
 
+    int fd_error[2] = {0};
+    if (pipe(fd_error) == -1) {
+        bad_sound;
+        visual_error;
+        exit(8);
+    }
+
     pid_t pid = fork();
     if (pid == 0) {
         dup2(fd_pass[1], 1);
         close(fd_pass[0]);
         close(fd_pass[1]);
+        dup2(fd_error[1], 2);
+        close(fd_error[0]);
+        close(fd_error[1]);
         execlp(
             "osascript",
             "osascript",
@@ -27,6 +37,7 @@ void get_password() {
         );
         bad_sound;
         visual_error;
+        perror("Applescript failed");
         exit(8);
     } else if (pid < 0) {
         bad_sound;
@@ -34,8 +45,17 @@ void get_password() {
         exit(8);
     }
     close(fd_pass[1]);
+    close(fd_error[1]);
 
     wait(NULL);
+
+    char error[1];
+    if (read(fd_error[0], error, sizeof(char)) > 0) {
+        perror("User canceled applescript");
+        return 8;
+    }
+
+    close(fd_error[0]);
 
     // Remove newline save data
     init_pipe();
@@ -68,5 +88,5 @@ void get_password() {
 
     close(fd_pass[0]);
 
-    return;
+    return 0;
 }

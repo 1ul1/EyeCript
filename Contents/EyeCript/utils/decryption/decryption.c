@@ -28,9 +28,7 @@ void decryption() {
     *(new_filename + strlen(filename) + 1) = '\0';
 
     // Clean and check if it already exists/
-    FILE* new_file = fopen(new_filename, "rb+");
-    if (new_file != NULL) {
-        fclose(new_file);
+    if (access(new_filename, F_OK) == 0) {
         bad_sound;
         visual_error;
 
@@ -53,7 +51,11 @@ void decryption() {
         exit(2);
     }
     
-    get_password();
+    // Exit if user closes applescript
+    if (get_password() == 8) {
+        remove(new_filename);
+        exit(8);
+    }
 
     pid_t pid = fork();
     
@@ -108,11 +110,9 @@ void decryption() {
     strcat(new_filename_extension, extension);
 
     // Check if it already exists to not replace other files
-    new_file = fopen(new_filename_extension, "rb+");
-    if (new_file != NULL) {
-        fclose(new_file);
+    if (access(new_filename_extension, F_OK) == 0 && *extension != '\0') {
         remove(new_filename);
-
+        
         bad_sound;
         visual_error;
         perror("File already exists");
@@ -126,6 +126,7 @@ void decryption() {
         perror("rename failed");
         exit(4);
     }
+
     free(extension);
 
     // Cleanup
